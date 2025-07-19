@@ -19,6 +19,7 @@ Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->
     Route::resource('job-postings', JobPostingController::class);
     Route::get('job-postings/{jobPosting}/applicants', [JobPostingController::class, 'showApplicants'])->name('job-postings.applicants');
     Route::patch('job-postings/{jobPosting}/status', [JobPostingController::class, 'updateStatus'])->name('job-postings.updateStatus');
+    Route::post('job-postings/{jobPosting}/applicants/{applicationId}/status', [JobPostingController::class, 'updateApplicantStatus'])->name('job-postings.applicants.updateStatus');
 });
 
 Route::middleware(['auth', 'jobseeker'])->prefix('job-seeker')->name('jobseeker.')->group(function () {

@@ -14,20 +14,17 @@ class JobPostingController extends Controller
         $this->middleware(['auth', 'employer']);
     }
 
-    // List all job postings for the authenticated employer
     public function index()
     {
         $jobs = JobPosting::where('employer_id', Auth::id())->latest()->get();
         return view('employer.jobs.index', compact('jobs'));
     }
 
-    // Show form to create a new job posting
     public function create()
     {
         return view('employer.jobs.create');
     }
 
-    // Store a new job posting
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -48,14 +45,12 @@ class JobPostingController extends Controller
         return redirect()->route('employer.job-postings.index')->with('status', 'Job posted successfully!');
     }
 
-    // Show form to edit a job posting
     public function edit(JobPosting $jobPosting)
     {
         $this->authorizeJob($jobPosting);
         return view('employer.jobs.edit', compact('jobPosting'));
     }
 
-    // Update a job posting
     public function update(Request $request, JobPosting $jobPosting)
     {
         $this->authorizeJob($jobPosting);
@@ -75,7 +70,6 @@ class JobPostingController extends Controller
         return redirect()->route('employer.job-postings.index')->with('status', 'Job updated successfully!');
     }
 
-    // Delete a job posting
     public function destroy(JobPosting $jobPosting)
     {
         $this->authorizeJob($jobPosting);
@@ -83,7 +77,6 @@ class JobPostingController extends Controller
         return redirect()->route('employer.job-postings.index')->with('status', 'Job deleted successfully!');
     }
 
-    // Show applicants for a job posting (stub, to be implemented)
     public function showApplicants(JobPosting $jobPosting)
     {
         $this->authorizeJob($jobPosting);
@@ -91,7 +84,18 @@ class JobPostingController extends Controller
         return view('employer.jobs.applicants', compact('jobPosting', 'applicants'));
     }
 
-    // Update job status (Open/Closed)
+    public function updateApplicantStatus(Request $request, JobPosting $jobPosting, $applicationId)
+    {
+        $this->authorizeJob($jobPosting);
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,shortlisted,accepted,rejected',
+        ]);
+        $application = $jobPosting->applications()->where('id', $applicationId)->firstOrFail();
+        $application->status = $request->status;
+        $application->save();
+        return redirect()->back()->with('status', 'Applicant status updated!');
+    }
+
     public function updateStatus(Request $request, JobPosting $jobPosting)
     {
         $this->authorizeJob($jobPosting);
@@ -103,7 +107,6 @@ class JobPostingController extends Controller
         return redirect()->route('employer.job-postings.index')->with('status', 'Job status updated!');
     }
 
-    // Helper to ensure only the owner can manage their job postings
     protected function authorizeJob(JobPosting $jobPosting)
     {
         if ($jobPosting->employer_id !== Auth::id()) {
