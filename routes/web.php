@@ -8,10 +8,13 @@ use App\Http\Controllers\JobSeeker\DashboardController as JobSeekerDashboardCont
 use App\Http\Controllers\JobSeeker\ProfileController;
 use App\Http\Controllers\JobSeeker\JobController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicJobController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('public.home');
+Route::get('/jobs', [PublicJobController::class, 'index'])->name('public.jobs');
+Route::get('/jobs/{id}', [PublicJobController::class, 'show'])->name('public.jobs.show');
+Route::post('/jobs/{id}/apply', [PublicJobController::class, 'apply'])->name('public.jobs.apply');
 
 Auth::routes();
 
