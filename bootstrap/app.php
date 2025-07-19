@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Register alias middleware for role-based access
+        $middleware->alias([
+            'employer' => \App\Http\Middleware\Employer::class,
+            'jobseeker' => \App\Http\Middleware\JobSeeker::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
