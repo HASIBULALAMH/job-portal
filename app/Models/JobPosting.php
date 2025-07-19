@@ -36,6 +36,14 @@ class JobPosting extends Model
     }
 
     /**
+     * Get the applications for this job posting.
+     */
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    /**
      * Scope a query to only include published job postings.
      */
     public function scopePublished($query)

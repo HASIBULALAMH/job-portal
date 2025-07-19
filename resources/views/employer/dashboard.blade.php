@@ -18,13 +18,8 @@
                         Welcome, {{ Auth::user()->name }}! You are logged in as an Employer.
                     </div>
 
-                    <div class="mt-4">
-                        <h4>Quick Actions</h4>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">Post a New Job</a>
-                            <a href="#" class="list-group-item list-group-item-action">View My Job Postings</a>
-                            <a href="#" class="list-group-item list-group-item-action">View Applicants</a>
-                        </div>
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('employer.job-postings.index') }}" class="btn btn-lg btn-primary">Manage My Job Postings</a>
                     </div>
                 </div>
             </div>

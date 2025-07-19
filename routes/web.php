@@ -14,7 +14,12 @@ Auth::routes();
 // Employer Routes - Protected by auth and employer middleware
 Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->group(function () {
     Route::get('/dashboard', [EmployerDashboardController::class, 'index'])->name('dashboard');
-    // Add more employer routes here
+    // Job Posting CRUD
+    Route::resource('job-postings', \App\Http\Controllers\Employer\JobPostingController::class);
+    // View applicants for a job
+    Route::get('job-postings/{jobPosting}/applicants', [\App\Http\Controllers\Employer\JobPostingController::class, 'showApplicants'])->name('job-postings.applicants');
+    // Update job status
+    Route::patch('job-postings/{jobPosting}/status', [\App\Http\Controllers\Employer\JobPostingController::class, 'updateStatus'])->name('job-postings.updateStatus');
 });
 
 // Job Seeker Routes - Protected by auth and jobseeker middleware
