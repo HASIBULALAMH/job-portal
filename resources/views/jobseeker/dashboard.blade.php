@@ -21,9 +21,9 @@
                     <div class="mt-4">
                         <h4>Quick Actions</h4>
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">Browse Jobs</a>
-                            <a href="#" class="list-group-item list-group-item-action">My Applications</a>
-                            <a href="#" class="list-group-item list-group-item-action">My Profile</a>
+                            <a href="{{ route('jobseeker.jobs.browse') }}" class="list-group-item list-group-item-action">Browse Jobs</a>
+                            <a href="{{ route('jobseeker.jobs.applied') }}" class="list-group-item list-group-item-action">My Applications</a>
+                            <a href="{{ route('jobseeker.profile.edit') }}" class="list-group-item list-group-item-action">My Profile</a>
                         </div>
                     </div>
                 </div>

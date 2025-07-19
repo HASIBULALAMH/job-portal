@@ -3,7 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Employer\DashboardController as EmployerDashboardController;
+use App\Http\Controllers\Employer\JobPostingController;
 use App\Http\Controllers\JobSeeker\DashboardController as JobSeekerDashboardController;
+use App\Http\Controllers\JobSeeker\ProfileController;
+use App\Http\Controllers\JobSeeker\JobController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,31 +14,30 @@ Route::get('/', function () {
 
 Auth::routes();
 
-// Employer Routes - Protected by auth and employer middleware
 Route::middleware(['auth', 'employer'])->prefix('employer')->name('employer.')->group(function () {
     Route::get('/dashboard', [EmployerDashboardController::class, 'index'])->name('dashboard');
-    // Job Posting CRUD
-    Route::resource('job-postings', \App\Http\Controllers\Employer\JobPostingController::class);
-    // View applicants for a job
-    Route::get('job-postings/{jobPosting}/applicants', [\App\Http\Controllers\Employer\JobPostingController::class, 'showApplicants'])->name('job-postings.applicants');
-    // Update job status
-    Route::patch('job-postings/{jobPosting}/status', [\App\Http\Controllers\Employer\JobPostingController::class, 'updateStatus'])->name('job-postings.updateStatus');
+    Route::resource('job-postings', JobPostingController::class);
+    Route::get('job-postings/{jobPosting}/applicants', [JobPostingController::class, 'showApplicants'])->name('job-postings.applicants');
+    Route::patch('job-postings/{jobPosting}/status', [JobPostingController::class, 'updateStatus'])->name('job-postings.updateStatus');
 });
 
-// Job Seeker Routes - Protected by auth and jobseeker middleware
-Route::middleware(['auth', 'jobseeker'])->prefix('job-seeker')->name('job-seeker.')->group(function () {
+Route::middleware(['auth', 'jobseeker'])->prefix('job-seeker')->name('jobseeker.')->group(function () {
     Route::get('/dashboard', [JobSeekerDashboardController::class, 'index'])->name('dashboard');
-    // Add more job seeker routes here
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.browse');
+    Route::get('/jobs/{jobPosting}', [JobController::class, 'show'])->name('jobs.show');
+    Route::post('/jobs/{jobPosting}/apply', [JobController::class, 'apply'])->name('jobs.apply');
+    Route::get('/applied', [JobController::class, 'applied'])->name('jobs.applied');
 });
 
-// Default home route - redirect based on user role
 Route::get('/home', function () {
     if (Auth::check()) {
         $user = Auth::user();
         if ($user->isEmployer()) {
             return redirect()->route('employer.dashboard');
         }
-        return redirect()->route('job-seeker.dashboard');
+        return redirect()->route('jobseeker.dashboard');
     }
     return redirect()->route('login');
-})->name('home');
+});
