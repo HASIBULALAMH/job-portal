@@ -7,6 +7,7 @@ use App\Http\Controllers\Employer\JobPostingController;
 use App\Http\Controllers\JobSeeker\DashboardController as JobSeekerDashboardController;
 use App\Http\Controllers\JobSeeker\ProfileController;
 use App\Http\Controllers\JobSeeker\JobController;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +31,17 @@ Route::middleware(['auth', 'jobseeker'])->prefix('job-seeker')->name('jobseeker.
     Route::get('/jobs/{jobPosting}', [JobController::class, 'show'])->name('jobs.show');
     Route::post('/jobs/{jobPosting}/apply', [JobController::class, 'apply'])->name('jobs.apply');
     Route::get('/applied', [JobController::class, 'applied'])->name('jobs.applied');
+});
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('login', [AdminController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [AdminController::class, 'login'])->name('login.submit');
+    Route::post('logout', [AdminController::class, 'logout'])->name('logout');
+    Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('users', [AdminController::class, 'users'])->name('users');
+    Route::get('jobs', [AdminController::class, 'jobs'])->name('jobs');
+    Route::delete('users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::delete('jobs/{id}', [AdminController::class, 'destroyJob'])->name('jobs.destroy');
 });
 
 Route::get('/home', function () {

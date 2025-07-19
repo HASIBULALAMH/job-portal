@@ -14,7 +14,7 @@ return new class extends Migration
         // Check if the 'role' column doesn't exist before adding it
         if (!Schema::hasColumn('users', 'role')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->enum('role', ['employer', 'job_seeker'])->default('job_seeker')->after('email');
+                $table->enum('role', ['admin', 'employer', 'job_seeker'])->default('job_seeker')->after('email');
             });
         }
     }

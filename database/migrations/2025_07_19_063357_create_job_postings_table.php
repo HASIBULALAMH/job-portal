@@ -26,6 +26,7 @@ return new class extends Migration
             $table->text('responsibilities')->nullable();
             $table->text('benefits')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
